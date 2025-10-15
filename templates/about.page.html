@@ -1,0 +1,22 @@
+{{template "base" .}}
+
+{{define "content"}}
+  <div class="container">
+    <div class="row">
+      <div class="col">
+
+        <h1>About Page</h1>
+        <p>templatedata: {{index .StringMap "test"}}</p>
+
+        <p>
+          {{if ne (index .StringMap "remote_ip") ""}}
+            YYour remote IP address is "{{index .StringMap "remote_ip"}}"
+          {{else}}
+            IP address unknown. Visit <a href="/">Home Page</a> to set it.
+          {{end}}
+        </p>
+      </div>
+    </div>
+  </div>
+{{end}}
+
