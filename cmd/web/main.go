@@ -1,24 +1,58 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
-	"github.com/mitchsmoot/booking-app/pkg/config"
-	"github.com/mitchsmoot/booking-app/pkg/handlers"
-	"github.com/mitchsmoot/booking-app/pkg/render"
+	"webapp/internal/config"
+	"webapp/internal/handlers"
+	"webapp/internal/helpers"
+	"webapp/internal/models"
+	"webapp/internal/render"
 
 	"github.com/alexedwards/scs/v2"
 )
 
 const portNumber = ":8080"
+
 var app config.AppConfig
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Starting application on port %s", portNumber)
+	// _ = http.ListenAndServe(portNumber, nil)
+
+	serve := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+
+	err = serve.ListenAndServe()
+	log.Fatal(err)
+}
+
+func run() error {
+
+	// What to put into the session
+	gob.Register(models.Reservation{})
 
 	app.InProduction = false
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -37,20 +71,8 @@ func main() {
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
-
 	render.NewTemplates(&app)
+	helpers.NewHelpers(&app)
 
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-
-	fmt.Printf("Starting application on port %s", portNumber)
-	// _ = http.ListenAndServe(portNumber, nil)
-
-	serve := &http.Server{
-		Addr:    portNumber,
-		Handler: routes(&app),
-	}
-
-	err = serve.ListenAndServe()
-	log.Fatal(err)
+	return nil
 }
