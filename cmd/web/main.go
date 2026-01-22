@@ -15,6 +15,7 @@ import (
 	"webapp/internal/render"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/joho/godotenv"
 )
 
 const portNumber = ":8080"
@@ -25,6 +26,11 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	db, err := run()
 	if err != nil {
 		log.Fatal(err)
@@ -68,7 +74,7 @@ func run() (*driver.DB, error) {
 
 	//connect to database
 	log.Println("Connecting to database...")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname= user= password=")
+	db, err := driver.ConnectSQL(fmt.Sprintf("host=localhost port=5432 dbname=%s user=%s password=%s", os.Getenv("PG_NAME"), os.Getenv("PG_USER"), os.Getenv("PG_PASSWORD")))
 	if err != nil {
 		log.Fatal("Cannot connect to database. Stopping application.")
 	}
