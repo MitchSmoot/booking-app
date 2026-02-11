@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict JiM9OpPU70CSNru97kwSDyfgxzDylCammFve15jA0czyuvshNgxZ3lhRzZBYx1B
+\restrict 4kVYFavnWGJbuC7oFJ8oZMywn3rXVunilm8J7vpDxHCSb2dKkRmc5k547PX0hFN
 
 -- Dumped from database version 14.20 (Ubuntu 14.20-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.20 (Ubuntu 14.20-0ubuntu0.22.04.1)
@@ -109,7 +109,7 @@ CREATE TABLE public.room_restrictions (
     start_date date NOT NULL,
     end_date date NOT NULL,
     room_id integer NOT NULL,
-    reservation_id integer NOT NULL,
+    reservation_id integer,
     restriction_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -387,5 +387,5 @@ ALTER TABLE ONLY public.room_restrictions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict JiM9OpPU70CSNru97kwSDyfgxzDylCammFve15jA0czyuvshNgxZ3lhRzZBYx1B
+\unrestrict 4kVYFavnWGJbuC7oFJ8oZMywn3rXVunilm8J7vpDxHCSb2dKkRmc5k547PX0hFN
 
